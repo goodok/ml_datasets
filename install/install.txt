@@ -1,0 +1,27 @@
+
+
+## Directories
+
+- CODE     - Path where github.com/goodok_mlds/ code is cloned
+- ARSENAL  - Path for other cloned packages
+- DATA     - Path for data
+
+
+## Virtualenv
+
+    mkvirtualenv approx
+
+## Install modules
+
+    cd CODE/install/
+
+    pip install -r requirements.txt
+
+## Install package
+
+    cd CODE/
+    python setup.py develop
+
+## respective directory
+
+    cd CODE

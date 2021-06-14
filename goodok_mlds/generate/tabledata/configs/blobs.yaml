@@ -1,0 +1,35 @@
+# https://github.com/lucmos/nn-template/blob/main/conf/data/default.yaml
+# _target_: approx02.pl_datamodule.tabledata.BlobsDM
+
+datasets:
+    # reprodusion seed
+  seed: 1234
+
+  destination_dir: null
+
+  shared_params:
+    generate: False
+    x_dimension: 2
+    x_bounds: [-2, 2]
+    x_scale: 1
+    blobs:
+    - center: [1, 0]
+      std: 0.5
+      height: 1
+
+  train:
+    # _target_: approx02.datasets.toy_tabledata.blobs.BlobsDataset
+    # name: YourTrainDatasetName
+    path: ${datasets.destination_dir}/train
+    # rsa1: sdssss
+    seed: 1231
+    num_samples: 16000
+    shared_params: ${datasets.shared_params}
+
+  test:
+    # _target_: approx02.datasets.toy_tabledata.blobs.BlobsDataset
+    path: ${datasets.destination_dir}/test
+    num_samples: 2000
+    seed: 1233
+    shared_params: ${datasets.shared_params}
+

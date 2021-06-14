@@ -1,0 +1,27 @@
+
+
+torch==1.7.1
+torchvision==0.8.2
+# torchaudio=0.7.2
+
+monai==0.3.0
+pillow
+scipy
+plyfile
+#hydra-core>=1.0.0rc2
+#git+git://github.com/facebookresearch/hydra@3775a29b255be065057f7fb97a3dd56b8f018145
+#hydra-core>=1.1.0dev1
+hydra-core==1.1.0.dev7
+#omegaconf>=2.1.0dev9
+omegaconf==2.1.0.dev27
+neptune-client
+psutil
+GitPython
+pytorch-lightning>=1.0.7
+pytest
+humanize
+scikit-learn
+scikit-image
+networkx
+goodok_mlu
+tensorboardX
