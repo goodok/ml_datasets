@@ -8,17 +8,11 @@ datasets:
   destination_dir: null
 
   shared_params:
-    generate: False
-    x_dimension: 2
+    # https://github.com/AWehenkel/UMNN/blob/master/lib/toy_data.py
+    noise: 0.08
+    factor: 0.5
+    x_scale: 2
     x_bounds: [-2, 2]
-    x_scale: 1
-    blobs:
-    - center: [1, 0]
-      std: 0.5
-      height: 1
-    - center: [-1, 1]
-      std: 0.4
-      height: 0.7
 
   train:
     # _target_: approx02.datasets.toy_tabledata.blobs.BlobsDataset

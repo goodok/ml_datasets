@@ -12,13 +12,18 @@ datasets:
     x_dimension: 2
     x_bounds: [-2, 2]
     x_scale: 1
-    blobs:
-    - center: [1, 0]
-      std: 0.5
-      height: 1
-    - center: [-1, 1]
-      std: 0.4
-      height: 0.7
+
+    blob_num: 8
+    blob_std: 1
+    blob_height: 1
+
+    # blobs:
+    # - center: [1, 0]
+    #   std: 1
+    #   height: 1
+    # - center: [-1, 1]
+    #   std: 1
+    #   height: 1
 
   train:
     # _target_: approx02.datasets.toy_tabledata.blobs.BlobsDataset

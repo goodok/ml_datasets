@@ -16,9 +16,6 @@ datasets:
     - center: [1, 0]
       std: 0.5
       height: 1
-    - center: [-1, 1]
-      std: 0.4
-      height: 0.7
 
   train:
     # _target_: approx02.datasets.toy_tabledata.blobs.BlobsDataset
