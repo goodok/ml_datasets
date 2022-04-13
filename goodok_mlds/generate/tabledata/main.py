@@ -10,7 +10,7 @@ from hydra.core.global_hydra import GlobalHydra
 # from omegaconf import OmegaConf, open_dict
 
 from .config import CONFIGS_PATH, DATETIME_OF_FILES
-from .classes import BlobGenerate, BlobsGenerate, TwoMoonsGenerate, CirclesGenerate, EightGaussiansGenerate
+from .classes import BlobGenerate, BlobsGenerate, TwoMoonsGenerate, CirclesGenerate, EightGaussiansGenerate, TwoSpiralsGenerate
 
 
 def _get_configs_path(config_path):
@@ -125,5 +125,16 @@ def circles_generate(config_name='circles', destination_dir=None, config_path=No
 
     CirclesGenerate.from_cfg('train', cfg.datasets.train)
     CirclesGenerate.from_cfg('test', cfg.datasets.test)
+
+    create_tar(config_name, destination_dir, files=["train/x.npy", "train/y.npy", "test/x.npy", "test/y.npy", ])
+
+
+def two_spirals_generate(config_name='two_spirals', destination_dir=None, config_path=None):
+    assert destination_dir is not None
+    assert Path(destination_dir).exists(), destination_dir
+    cfg = _get_cfg(config_name=config_name, config_path=config_path, destination_dir=destination_dir)
+
+    TwoSpiralsGenerate.from_cfg('train', cfg.datasets.train)
+    TwoSpiralsGenerate.from_cfg('test', cfg.datasets.test)
 
     create_tar(config_name, destination_dir, files=["train/x.npy", "train/y.npy", "test/x.npy", "test/y.npy", ])

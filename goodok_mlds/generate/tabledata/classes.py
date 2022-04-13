@@ -102,7 +102,7 @@ class BlobsGenerate(BlobGenerate):
         dimension = shared_params.get('dimension', 2)
         num_samples = cfg['num_samples']
         seed = cfg['seed']
-        X, y = BlobsGenerate.generate_xy(
+        X, y = cls.generate_xy(
             cfg=shared_params, centers=centers, clusters_std=stds, heights=heights, n_samples=num_samples, dimension=dimension,
             x_bounds=x_bounds, seed=seed)
 
@@ -148,17 +148,18 @@ class EightGaussiansGenerate(BlobGenerate):
 
         assert cfg['seed'] is not None, 'seed is None'
 
-        blob_num = shared_params['blob_num']
+        blob_num = shared_params['blobs_num']
+        r = shared_params['blobs_r']
 
         centers = []
         for i in range(blob_num):
-            angle = 2 * np.pi / blob_num
-            cx = np.cos(angle)
-            cy = np.sin(angle)
+            angle = 2 * np.pi / blob_num * i
+            cx = r * np.cos(angle)
+            cy = r * np.sin(angle)
             centers.append([cx, cy])
 
-        stds = [shared_params['blob_std']] * blob_num
-        heights = [shared_params['blob_height']] * blob_num
+        stds = [shared_params['blobs_std']] * blob_num
+        heights = [shared_params['blobs_height']] * blob_num
         x_bounds = shared_params['x_bounds']
         dimension = shared_params.get('dimension', 2)
         num_samples = cfg['num_samples']
@@ -230,27 +231,6 @@ class TwoMoonsGenerate():
 
         return points, yy
 
-    @classmethod
-    def function(cls, points, centers, clusters_std, heights):
-        y_sum = []
-        for center, std, height in zip(centers, clusters_std, heights):
-            dr = np.array(points) - np.array(center)
-            dr2 = (dr ** 2).sum(axis=1)
-            y = np.exp(- dr2 / (2 * std ** 2))
-            y = y * height
-            y_sum.append(y)
-
-        y = np.stack(y_sum).T
-        y = np.sum(y, axis=1)
-        return y
-
-    # @classmethod
-    # def x_scale_points(cls, points, cfg):
-    #     scale = cfg.get('x_scale', None)
-    #     if scale is not None:
-    #         points = points * scale
-    #     return points
-
 
 class CirclesGenerate():
 
@@ -311,8 +291,71 @@ class CirclesGenerate():
 
         return points, yy
 
+
+class TwoSpiralsGenerate(BlobGenerate):
+
     @classmethod
-    def function(cls, points, centers, clusters_std, heights):
+    def from_cfg(cls, name, cfg):
+        shared_params = cfg['shared_params']
+
+        fn_X = Path(cfg['path']) / 'x.npy'
+        fn_y = Path(cfg['path']) / 'y.npy'
+
+        if not Path(cfg['path']).exists():
+            os.makedirs(cfg['path'])
+
+        assert cfg['seed'] is not None, 'seed is None'
+
+        r0 = shared_params['r']
+
+        x_bounds = shared_params['x_bounds']
+        dimension = shared_params.get('dimension', 2)
+        num_samples = cfg['num_samples']
+        seed = cfg['seed']
+
+        X, y = cls.generate_xy(
+            cfg=shared_params, r0=r0, n_samples=num_samples, dimension=dimension,
+            x_bounds=x_bounds, seed=seed)
+
+        np.save(fn_X, X)
+        np.save(fn_y, y)
+
+        print(f'{fn_X} is saved')
+        print(f'{fn_y} is saved')
+
+    @classmethod
+    def generate_xy(cls, cfg={}, r0=1.0,
+                    n_samples=100, dimension=2, x_bounds=[-2, 2], seed=None):
+
+        if seed is None:
+            warnings.warn('seed is None', UserWarning)
+
+        rng = np.random.RandomState(seed)
+        # rng = np.random.default_rng(seed)
+
+        points = rng.uniform(x_bounds[0], x_bounds[1], (n_samples, dimension))
+        points = points.astype(np.float32)
+
+        yy = cls.function(points, r0=r0)
+        yy = yy.astype(np.float32)
+
+        points = cls.x_scale_points(points, cfg)
+
+        return points, yy
+
+    @classmethod
+    def function(cls, points, r0=1.0):
+        """
+            https://github.com/AWehenkel/UMNN/blob/master/lib/toy_data.py
+            elif data == "2spirals":
+            n = np.sqrt(np.random.rand(batch_size // 2, 1)) * 540 * (2 * np.pi) / 360
+            d1x = -np.cos(n) * n + np.random.rand(batch_size // 2, 1) * 0.5
+            d1y = np.sin(n) * n + np.random.rand(batch_size // 2, 1) * 0.5
+            x = np.vstack((np.hstack((d1x, d1y)), np.hstack((-d1x, -d1y)))) / 3
+            x += np.random.randn(*x.shape) * 0.1
+            return x.astype("float32")
+        """
+
         y_sum = []
         for center, std, height in zip(centers, clusters_std, heights):
             dr = np.array(points) - np.array(center)
@@ -324,10 +367,3 @@ class CirclesGenerate():
         y = np.stack(y_sum).T
         y = np.sum(y, axis=1)
         return y
-
-    # @classmethod
-    # def x_scale_points(cls, points, cfg):
-    #     scale = cfg.get('x_scale', None)
-    #     if scale is not None:
-    #         points = points * scale
-    #     return points

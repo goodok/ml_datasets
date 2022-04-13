@@ -13,9 +13,10 @@ datasets:
     x_bounds: [-2, 2]
     x_scale: 1
 
-    blob_num: 8
-    blob_std: 1
-    blob_height: 1
+    blobs_num: 8
+    blobs_r: 1.6
+    blobs_std: 0.3
+    blobs_height: 1
 
     # blobs:
     # - center: [1, 0]

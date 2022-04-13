@@ -1,0 +1,28 @@
+# https://github.com/lucmos/nn-template/blob/main/conf/data/default.yaml
+
+datasets:
+    # reprodution seed
+  seed: 1234
+
+  destination_dir: null
+
+  shared_params:
+    # https://github.com/AWehenkel/UMNN/blob/master/lib/toy_data.py
+    noise: 1.0
+    r: 2.0
+    x_scale: 2
+
+    x_bounds: [-2, 2]
+
+  train:
+    path: ${datasets.destination_dir}/train
+    seed: 1231
+    num_samples: 16000
+    shared_params: ${datasets.shared_params}
+
+  test:
+    path: ${datasets.destination_dir}/test
+    num_samples: 2000
+    seed: 1233
+    shared_params: ${datasets.shared_params}
+
